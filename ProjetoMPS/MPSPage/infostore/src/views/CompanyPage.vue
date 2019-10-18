@@ -27,10 +27,10 @@
      >      
       <template v-slot:items="props">
         <tr>          
-          <td>{{props.item.description}}</td>
+          <td>{{props.item.company}}</td>
           <td>{{props.item.classification}}</td>
           <td class="text-xs-center">
-            <v-btn icon @click="showOrders(clients.find(i => i === props.item))">
+            <v-btn icon @click="showComments(companies.find(i => i === props.item))">
               <v-icon> 
                 library_books
               </v-icon>
@@ -41,14 +41,14 @@
     </v-data-table>
     <v-dialog v-model="dialog" persistent max-width="800">
       <company-register 
-        v-on:OnCloseClientScreen="closeClientScreen">
+        v-on:OnCloseCompanyScreen="closeRegister">
       </company-register>
     </v-dialog>    
   </v-card>
 </template>
 
 <script>
-import companyRegister from '../components/companyRegister'
+import CompanyRegister from '../components/CompanyRegister'
 export default {
     data() {
         return {
@@ -58,7 +58,7 @@ export default {
             headers: [
                 {
                     text: 'Empresa',
-                    value: 'description'
+                    value: 'company'
                 },
                 { 
                     text: 'Classificação', 
@@ -78,20 +78,24 @@ export default {
         }
     },
     components: {
-        'company-register': companyRegister
+        'company-register': CompanyRegister
     },
     methods: {
         fetchCompanies(){
-            fetch("http://localhost:3000/company/").then(response => response.json()).then(data => {
+            fetch("http://localhost:3000/company").then(response => response.json()).then(data => {
                 this.companies = data;
             }).catch(function(error){
                 console.log(error);
             });
         },
-        closeClientScreen(pRegistered){          
+        closeRegister(pRegistered){          
             this.dialog = false;
             if (pRegistered)
               this.fetchCompanies();
+        },
+        showComments(company){
+          localStorage.setItem("company", JSON.stringify(company));
+          this.$router.push({name: "comments"});
         }
     },
     mounted(){

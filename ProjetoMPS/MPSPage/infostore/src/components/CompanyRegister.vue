@@ -46,47 +46,50 @@ export default{
             company:"",
             classification: "",
             text: "",
-            snackbar: false
+            snackbar: false,
+            registered: false
         }    
     },
     methods:{        
         submit(){                    
           let data = JSON.stringify({
-            company: company,
-            classification: classification,
+            company: this.company,
+            classification: this.classification,
             comments: []            
-          });
+          });          
 
           var vm = this;
 
-          fetch("http://localhosto:3000/company/register", {
-                headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                method: "PUT",
-                body: data
-            }).then(response => response.json()).then(data => {                
-                if (data.error){
-                    vm.text = data.error;                
-                    vm.snackbar = true;
-                }else{
-                    vm.text = "Empresa cadastrada com sucesso!";                
-                    vm.snackbar = true;  
-                    vm.registered = true;                                                          
-                    vm.reset();
-                }
-            }).catch(function(error) {            
-                vm.text = error;
-                vm.snackbar = true;
-                vm.reset();
-            });
+          fetch("http://localhost:3000/company", {            
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "PUT",
+            body: data
+          }).then(response => response.json()).then(data => {                
+            if (data.error){
+              vm.text = data.error;                
+              vm.snackbar = true;
+            }else{
+              vm.text = "Empresa cadastrada com sucesso!";                
+              vm.snackbar = true;  
+              vm.registered = true;                                                          
+              vm.reset();
+            }
+          }).catch(function(error) {            
+            vm.text = error;
+            vm.snackbar = true;
+            vm.reset();
+          });
         },
         reset(){
-          this.$refs.form.reset();
+          this.company = "";
+          this.classification = "";
         },
         close(){
-            this.$emit("OnCloseOrderScreen");
+          this.reset();
+          this.$emit("OnCloseCompanyScreen", this.registered);
         }
     }
 }

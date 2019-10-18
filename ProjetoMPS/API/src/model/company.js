@@ -1,7 +1,7 @@
 const mongoose = require('../database');
 
 const CompanySchema = mongoose.Schema({
-    description:{
+    company:{
         type: String,
     },
     classification:{

@@ -4,9 +4,9 @@ const mongoose = require('../database');
 const router = express.Router();
 
 router.put('/', async(req, res) => {
-    const {description, classifications, comments} = req.body;
+    const {company} = req.body;
 
-    if (!description)
+    if (!company)
         return res.status(400).send({error: "The company need a description"});
     try{
         const company = await Company.create(req.body);
@@ -20,6 +20,7 @@ router.get('/', async(req, res) => {
     try{
         var companies = mongoose.model('Company');
         companies.find(function(err, allCompanies){
+            console.log(allCompanies);
             res.status(200).json(allCompanies);
         });
     }catch(err){
@@ -27,19 +28,21 @@ router.get('/', async(req, res) => {
     }
 });
 
-router.post("/",async function(req,res){  
-  var newData = {
-    "description": req.body.description,
-    "classification": req.body.classification,
-    "comments": req.body.comments
-  }
-  
-  var companies = mongoose.model('Company');
-  
-  const finded = await companies.findByIdAndUpdate(req.body._id, newData, {useFindAndModify: false});
-  if (finded)
-    res.status(201).json(finded)
-  else res.status(400).json({error: "error"});
+router.post("/",async function(req,res){    
+    var newData = {
+        "company": req.body.company,
+        "classification": req.body.classification,
+        "comments": req.body.comments
+    };
+    
+    var companies = mongoose.model('Company');
+    
+    const finded = await companies.findByIdAndUpdate(req.body._id, newData, {useFindAndModify: false});
+    if (finded){
+        console.log(finded);
+        res.status(201).json(finded);        
+    }
+    else res.status(400).json({error: "error"});
 });
 
 module.exports = app => app.use('/company', router);
