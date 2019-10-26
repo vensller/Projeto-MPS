@@ -34,6 +34,7 @@
               <v-icon>account_circle</v-icon>
             </v-btn>
           </td>
+          <td>{{props.item.rate}}</td>
         </tr>
       </template>
     </v-data-table>
@@ -69,6 +70,10 @@ export default {
           value: '_id',
           sortable: false,
           align: 'center'
+        },
+        {
+          text: 'Rate',
+          value: 'rate'
         }
       ],
       companies: [],
@@ -81,8 +86,8 @@ export default {
     'company-register': CompanyRegister
   },
   methods: {
-    fetchCompanies () {
-      fetch('http://localhost:3000/company')
+    async fetchCompanies () {
+      await fetch('http://localhost:3000/company')
         .then(response => response.json())
         .then(data => {
           this.companies = data
@@ -116,8 +121,8 @@ export default {
       this.editFunc = item
     }
   },
-  mounted () {
-    this.fetchCompanies()
+  async mounted () {
+    await this.fetchCompanies()
   }
 }
 </script>
