@@ -4,7 +4,7 @@ const mongoose = require('../database');
 const router = express.Router();
 
 router.put('/', async(req, res) => {
-    const {company} = req.body;
+    const company = req.body;
 
     if (!company)
         return res.status(400).send({error: "The company need a description"});
@@ -20,7 +20,24 @@ router.get('/', async(req, res) => {
     try{
         var companies = mongoose.model('Company');
         companies.find(function(err, allCompanies){
-            console.log(allCompanies);
+            for( let i = 0; i < allCompanies.length; i++ ){
+                let average = 0.0;
+                let actualCompany = allCompanies[i];
+                for( let j = 0; j < actualCompany.comments.length; j++ ){
+                    average += actualCompany.comments[j].rate;
+                }
+                if( average != 0.0 ){
+                    average /= actualCompany.comments.length;
+                }
+                let newCompany = {
+                    "_id" : actualCompany._id,
+                    "company":actualCompany.company,
+                    "classification":actualCompany.classification,
+                    "rate":average,
+                    "comments":actualCompany.comments
+                }
+                allCompanies[i] = newCompany;
+            }
             res.status(200).json(allCompanies);
         });
     }catch(err){
