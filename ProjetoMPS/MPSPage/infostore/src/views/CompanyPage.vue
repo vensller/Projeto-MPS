@@ -106,7 +106,7 @@ export default {
     },
     deleteCompany (company) {
       console.log('Company: ', company)
-      fetch('http://localhost:3000/company/delete', {
+      fetch('http://localhost:3000/company', {
         method: 'DELETE',
         body: company
       })

@@ -86,7 +86,7 @@
               vm.reset()
             })
         } else {
-          fetch('http://localhost:3000/company/update', {
+          fetch('http://localhost:3000/company', {
             headers: {
               accept: 'application/json',
               'Content-Type': 'application/json'
