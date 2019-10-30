@@ -105,8 +105,12 @@ export default {
       this.$router.push({ name: 'comments' })
     },
     deleteCompany (company) {
-      console.log('Company: ', company)
+      console.log( JSON.stringify(company))
       fetch('http://localhost:3000/company', {
+        headers: {
+                    'accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
         method: 'DELETE',
         body: JSON.stringify(company)
       })
