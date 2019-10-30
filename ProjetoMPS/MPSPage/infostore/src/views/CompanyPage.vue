@@ -108,7 +108,7 @@ export default {
       console.log('Company: ', company)
       fetch('http://localhost:3000/company', {
         method: 'DELETE',
-        body: company
+        body: JSON.stringify(company)
       })
         .then(response => response.json())
         .catch(erro => console.log(erro))
