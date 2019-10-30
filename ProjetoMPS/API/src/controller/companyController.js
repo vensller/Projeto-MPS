@@ -45,7 +45,8 @@ router.get('/', async(req, res) => {
     }
 });
 
-router.post("/",async function(req,res){    
+router.post("/",async function(req,res){  
+    // console.log(req.body); 
     var newData = {
         "company": req.body.company,
         "classification": req.body.classification,
@@ -56,10 +57,18 @@ router.post("/",async function(req,res){
     
     const finded = await companies.findByIdAndUpdate(req.body._id, newData, {useFindAndModify: false});
     if (finded){
-        console.log(finded);
         res.status(201).json(finded);        
     }
-    else res.status(400).json({error: "error"});
+    else res.status(500).json({error: "error"});
 });
+
+router.delete("/", async function(req,res){
+    var companies = mongoose.model('Company');
+    const finded = await companies.findByIdAndRemove(req.body._id, {useFindAndModify: false});
+    if (finded){
+        res.status(201).json(finded);        
+    }
+    else res.status(500).json({error: "error"});
+  })
 
 module.exports = app => app.use('/company', router);
