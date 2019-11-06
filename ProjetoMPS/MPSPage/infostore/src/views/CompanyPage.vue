@@ -105,17 +105,28 @@ export default {
       this.$router.push({ name: 'comments' })
     },
     deleteCompany (company) {
-      console.log('Company: ', company)
-      fetch('http://localhost:3000/company', {
-        method: 'DELETE',
-        body: JSON.stringify(company)
+      let data = JSON.stringify({
+        _id: company._id,
+        company: company.company,
+        classification: company.classification,
+        comments: [],
+        rate: 0
       })
-        .then(response => response.json())
+      fetch('http://localhost:3000/company', {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: 'DELETE',
+        body: data
+      })
+        .then(() => this.fetchCompanies())
         .catch(erro => console.log(erro))
     },
-    updateCompany (company) {
+    async updateCompany (company) {
       this.editFunc(company)
       this.dialog = true
+      await this.fetchCompanies()
     },
     componentCreated (item) {
       this.editFunc = item

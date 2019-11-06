@@ -91,7 +91,7 @@
               accept: 'application/json',
               'Content-Type': 'application/json'
             },
-            method: 'PUT',
+            method: 'POST',
             body: data
           })
             .then(response => response.json())
