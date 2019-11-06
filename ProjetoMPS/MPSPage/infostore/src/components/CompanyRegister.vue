@@ -51,14 +51,13 @@
     methods: {
       submit () {
         let data = JSON.stringify({
-          id: '',
           company: this.company,
           classification: this.classification,
           comments: []
         })
 
         var vm = this
-
+        console.log("Id: ", this.id)
         if (this.id === '') {
           fetch('http://localhost:3000/company', {
             headers: {
@@ -92,7 +91,12 @@
               'Content-Type': 'application/json'
             },
             method: 'POST',
-            body: data
+            body: JSON.stringify({
+              _id: this.id,
+              company: this.company,
+              classification: this.classification,
+              comments: []
+            })
           })
             .then(response => response.json())
             .then(data => {
@@ -114,6 +118,7 @@
         }
       },
       reset () {
+        this.id=''
         this.company = ''
         this.classification = ''
       },
