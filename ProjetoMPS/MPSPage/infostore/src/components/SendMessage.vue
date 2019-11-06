@@ -52,20 +52,22 @@
         phone: '',
         message: '',
         snackbar: false,
-        registered: false
+        registered: false,
+        text: '',
+        company: undefined
       }
     },
     methods: {
       submit () {
-
-        console.log("Id: ", this.id)
-
-        let data = JSON.stringify({
-          name: this.name,
-          email: this.email,
-          phone: this.phone,
-          message: this.message
-        })
+        if (!this.company.messages)
+          this.company.messages = [];
+        
+        this.company.messages.push({name: this.name,
+                                    email: this.email,
+                                    phone: this.phone,
+                                    message: this.message
+        });
+        let data = JSON.stringify(this.company);
         console.log("Data: ", data)
         var vm = this
         fetch('http://localhost:3000/company', {
@@ -73,7 +75,7 @@
             accept: 'application/json',
             'Content-Type': 'application/json'
           },
-          method: 'PUT',
+          method: 'POST',
           body: data
         })
           .then(response => response.json())
@@ -103,14 +105,15 @@
         this.email = ''
         this.phone = ''
         this.message = ''
+        this.company = undefined
       },
       updateCompany (company) {
         console.log("Company: ", company);
-        this.id = company._id
-      },
-      created () {
-        this.$emit('onCompanyCreated', this.updateCompany)
+        this.company = company;
       }
     },
+    created () {
+      this.$emit('onCompanyCreated', this.updateCompany)
+    }
   }
 </script>

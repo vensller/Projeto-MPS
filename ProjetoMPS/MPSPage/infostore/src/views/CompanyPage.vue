@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title>
-            <h1>Empresa - MPS/BR</h1>
+            <h1>Empresa - {{companyName}}</h1>
 <!--            <v-btn icon @click="dialog = true">-->
 <!--                <v-icon>add</v-icon>-->
 <!--            </v-btn>-->
@@ -21,7 +21,8 @@
             <template v-slot:items="props">
                 <tr>
                     <td>{{props.item.company}}</td>
-                    <td>{{props.item.classification}}</td>
+                    <td>{{props.item.classification}}</td>                    
+                    <td>{{props.item.rate}}</td>
                     <td class="text-xs-center">
                         <v-btn text icon @click="deleteCompany(companies.find(i => i === props.item))">
                             <v-icon>delete</v-icon>
@@ -30,33 +31,29 @@
                             <v-icon>account_circle</v-icon>
                         </v-btn>
                     </td>
-                    <td>{{props.item.rate}}</td>
                 </tr>
             </template>
         </v-data-table>
-        <v-container style="margin-top: 32px">
-            <v-row justify="space-around">
-                <v-sheet
-                    :height="height"
-                >
-                    <p class="title">
-                        Mensagens privadas
-                    </p>
-                    <v-data-table
-                        :headers="desserts"
-                        :items="companies"
-                        class="elevation-1"
-                    >
-                        <template v-slot:items="props">
-                            <tr>
-<!--                                <td>{{props.item.company}}</td>-->
-<!--                                <td>{{props.item.classification}}</td>-->
-<!--                                <td>{{props.item.rate}}</td>-->
-                            </tr>
-                        </template>
-                    </v-data-table>
-                </v-sheet>
-            </v-row>
+        <v-container style="margin-top: 32px">            
+          <v-sheet>
+              <p class="title">
+                  Mensagens privadas
+              </p>
+              <v-data-table
+                  :headers="desserts"
+                  :items="messages"
+                  class="elevation-1"
+              >
+                  <template v-slot:items="props">
+                      <tr>
+                          <td>{{props.item.name}}</td>
+                          <td>{{props.item.email}}</td>
+                          <td>{{props.item.phone}}</td>
+                          <td>{{props.item.message}}</td>
+                      </tr>
+                  </template>
+              </v-data-table>
+          </v-sheet>
         </v-container>
         <v-dialog v-model="dialog" persistent max-width="800">
             <company-register
@@ -64,18 +61,11 @@
                 v-on:OnCloseCompanyScreen="closeRegister"
             ></company-register>
         </v-dialog>
-        <v-dialog v-model="dialogSendMessage" persistent max-width="800">
-            <send-message
-                v-on:onCompanyCreated="componentCreated"
-                v-on:OnCloseCompanyScreen="closeSend"
-            ></send-message>
-        </v-dialog>
     </v-card>
 </template>
 
 <script>
   import CompanyRegister from '../components/CompanyRegister'
-  import SendMessage from '../components/SendMessage'
 
   export default {
     data () {
@@ -94,55 +84,52 @@
             value: 'classification'
           },
           {
+            text: 'Rate',
+            value: 'rate'
+          },          
+          {
             text: 'Opções',
             value: '_id',
             sortable: false,
             align: 'center'
-          },
-          {
-            text: 'Rate',
-            value: 'rate'
           }
         ],
         desserts: [
           {
-            text: 'Nome'
+            text: 'Nome',
+            value: 'name'
           },
           {
             text: 'E-mail',
+            value: 'email'
           },
           {
-            text: 'Telefone'
+            text: 'Telefone',
+            value: 'phone'
           },
           {
-            text: 'Mensagem'
+            text: 'Mensagem',
+            value: 'message'
           }
         ],
         companies: [],
         dialog: false,
         dialogOrders: false,
         dialogSendMessage: false,
-        editFunc: Function
+        editFunc: Function,
+        companyName: '',
+        messages: []
       }
     },
     components: {
-      'company-register': CompanyRegister,
-      'send-message': SendMessage
+      'company-register': CompanyRegister
     },
-    methods: {
-      async fetchCompanies () {
-        await fetch('http://localhost:3000/company')
-          .then(response => response.json())
-          .then(data => {
-            this.companies = data
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-      },
+    methods: {      
       closeRegister (pRegistered) {
         this.dialog = false
-        if (pRegistered) this.fetchCompanies()
+        if (pRegistered) {
+          this.verifyCompany();
+        }
       },
       openSend (company) {
         this.editFunc(company)
@@ -159,6 +146,7 @@
         let data = JSON.stringify({
           _id: company._id,
           company: company.company,
+          password: company.password,
           classification: company.classification,
           comments: [],
           rate: 0
@@ -176,15 +164,25 @@
       },
       async updateCompany (company) {
         this.editFunc(company)
-        this.dialog = true
-        await this.fetchCompanies()
+        this.dialog = true        
       },
       componentCreated (item) {
         this.editFunc = item
+      },
+      verifyCompany(){
+        let company = localStorage.getItem('company');
+
+        if (company){
+          company = JSON.parse(company);
+          console.log(company);
+          this.companyName = company.company;
+          this.companies = [company];
+          this.messages = company.messages;
+        }else this.$router.push({name: 'index'});
       }
     },
     async mounted () {
-      await this.fetchCompanies()
+      this.verifyCompany();      
     }
   }
 </script>

@@ -49,7 +49,7 @@
         </v-dialog>
         <v-dialog v-model="dialogSendMessage" persistent max-width="800">
             <send-message
-                v-on:onCompanyCreated="componentCreated"
+                v-on:onCompanyCreated="componentCreated2"
                 v-on:OnCloseCompanyScreen="closeSend"
             ></send-message>
         </v-dialog>
@@ -91,7 +91,8 @@
         dialog: false,
         dialogOrders: false,
         dialogSendMessage: false,
-        editFunc: Function
+        editFunc: Function,
+        editFunc2: Function
       }
     },
     components: {
@@ -115,7 +116,7 @@
         if (pRegistered) this.fetchCompanies()
       },
       openSend (company) {
-        this.editFunc(company)
+        this.editFunc2(company)
         this.dialogSendMessage = true;
       },
       closeSend () {
@@ -151,6 +152,9 @@
       },
       componentCreated (item) {
         this.editFunc = item
+      },
+      componentCreated2(item){
+        this.editFunc2 = item
       }
     },
     async mounted () {

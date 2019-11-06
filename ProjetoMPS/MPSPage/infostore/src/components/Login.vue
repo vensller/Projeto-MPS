@@ -43,27 +43,29 @@
         login: '',
         password: '',
         snackbar: false,
-        registered: false
+        registered: false,
+        text: ''
       }
     },
     methods: {
       submit () {
         let data = JSON.stringify({
-          login: this.company,
-          password: this.classification
+          company: this.login,
+          password: this.password
         })
 
         var vm = this
-        fetch('http://localhost:3000/login', {
+        fetch('http://localhost:3000/company/login', {
           headers: {
             accept: 'application/json',
             'Content-Type': 'application/json'
           },
-          method: 'PUT',
+          method: 'put',
           body: data
         })
           .then(response => response.json())
           .then(data => {
+            console.log(data);
             if (data.error) {
               vm.text = data.error
               vm.snackbar = true
@@ -72,6 +74,10 @@
               vm.snackbar = true
               vm.registered = true
               vm.reset()
+              localStorage.removeItem('company');
+              localStorage.setItem('company', JSON.stringify(data));
+              vm.close();
+              vm.$router.push({name: 'company'});
             }
           })
           .catch(function (error) {
