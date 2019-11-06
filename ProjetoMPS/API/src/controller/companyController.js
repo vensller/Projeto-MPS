@@ -12,7 +12,7 @@ router.put('/', async(req, res) => {
         const company = await Company.create(req.body);
         return res.status(201).json(company);
     }catch(err){
-        return res.status(500).json({error: "Company registration failed!"});
+        return res.status(500).json( err );
     }
 });
 
@@ -41,7 +41,7 @@ router.get('/', async(req, res) => {
             res.status(200).json(allCompanies);
         });
     }catch(err){
-        return res.status(500).json({error: err});
+        return res.status(500).json(err);
     }
 });
 
@@ -53,22 +53,29 @@ router.post("/",async function(req,res){
         "comments": req.body.comments
     };
     
-    var companies = mongoose.model('Company');
+    try{
+        var companies = mongoose.model('Company');
     
-    const finded = await companies.findByIdAndUpdate(req.body._id, newData, {useFindAndModify: false});
-    if (finded){
-        res.status(201).json(finded);        
+        const finded = await companies.findByIdAndUpdate(req.body._id, newData, {useFindAndModify: false});
+        if (finded){
+            res.status(201).json(finded);        
+        }
+    }catch(err){
+        return res.status(500).json( err );
     }
-    else res.status(500).json({error: "error"});
+    
 });
 
 router.delete("/", async function(req,res){
-    var companies = mongoose.model('Company');
-    const finded = await companies.findByIdAndRemove(req.body._id, {useFindAndModify: false});
-    if (finded){
-        res.status(201).json(finded);        
+    try{
+        var companies = mongoose.model('Company');
+        const finded = await companies.findByIdAndRemove(req.body._id, {useFindAndModify: false});
+        if (finded){
+            res.status(201).json(finded);        
+        }
+    }catch(err){
+        return res.status(500).json( err );
     }
-    else res.status(500).json({error: "error"});
   })
 
 module.exports = app => app.use('/company', router);
