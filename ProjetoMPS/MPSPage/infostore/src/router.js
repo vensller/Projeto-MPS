@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import index from './views/index.vue'
 import CompanyPage from './views/CompanyPage.vue'
 import CompanyComments from './views/CompanyComments.vue'
 
@@ -10,6 +11,11 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
+      path: '/',
+      name: 'index',
+      component: index
+    },
+      {
       path: '/company',
       name: 'company',
       component: CompanyPage

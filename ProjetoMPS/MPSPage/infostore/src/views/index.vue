@@ -1,10 +1,11 @@
 <template>
     <v-card>
         <v-card-title>
-            <h1>Empresa - MPS/BR</h1>
-<!--            <v-btn icon @click="dialog = true">-->
-<!--                <v-icon>add</v-icon>-->
-<!--            </v-btn>-->
+            <h1>Empresas - MPS/BR</h1>
+
+            <v-btn icon @click="dialog = true">
+                <v-icon>add</v-icon>
+            </v-btn>
 
             <v-spacer></v-spacer>
 
@@ -23,41 +24,23 @@
                     <td>{{props.item.company}}</td>
                     <td>{{props.item.classification}}</td>
                     <td class="text-xs-center">
-                        <v-btn text icon @click="deleteCompany(companies.find(i => i === props.item))">
-                            <v-icon>delete</v-icon>
+                        <v-btn icon @click="showComments(companies.find(i => i === props.item))">
+                            <v-icon>add_comment</v-icon>
                         </v-btn>
-                        <v-btn text icon @click="updateCompany(companies.find(i => i === props.item))">
-                            <v-icon>account_circle</v-icon>
+                        <v-btn icon @click="openSend(companies.find(i => i === props.item))">
+                            <v-icon>message</v-icon>
                         </v-btn>
+<!--                        <v-btn text icon @click="deleteCompany(companies.find(i => i === props.item))">-->
+<!--                            <v-icon>delete</v-icon>-->
+<!--                        </v-btn>-->
+<!--                        <v-btn text icon @click="updateCompany(companies.find(i => i === props.item))">-->
+<!--                            <v-icon>account_circle</v-icon>-->
+<!--                        </v-btn>-->
                     </td>
                     <td>{{props.item.rate}}</td>
                 </tr>
             </template>
         </v-data-table>
-        <v-container style="margin-top: 32px">
-            <v-row justify="space-around">
-                <v-sheet
-                    :height="height"
-                >
-                    <p class="title">
-                        Mensagens privadas
-                    </p>
-                    <v-data-table
-                        :headers="desserts"
-                        :items="companies"
-                        class="elevation-1"
-                    >
-                        <template v-slot:items="props">
-                            <tr>
-<!--                                <td>{{props.item.company}}</td>-->
-<!--                                <td>{{props.item.classification}}</td>-->
-<!--                                <td>{{props.item.rate}}</td>-->
-                            </tr>
-                        </template>
-                    </v-data-table>
-                </v-sheet>
-            </v-row>
-        </v-container>
         <v-dialog v-model="dialog" persistent max-width="800">
             <company-register
                 v-on:onCompanyCreated="componentCreated"
@@ -104,20 +87,6 @@
             value: 'rate'
           }
         ],
-        desserts: [
-          {
-            text: 'Nome'
-          },
-          {
-            text: 'E-mail',
-          },
-          {
-            text: 'Telefone'
-          },
-          {
-            text: 'Mensagem'
-          }
-        ],
         companies: [],
         dialog: false,
         dialogOrders: false,
@@ -127,7 +96,8 @@
     },
     components: {
       'company-register': CompanyRegister,
-      'send-message': SendMessage
+      'send-message': SendMessage,
+      // 'login': Login
     },
     methods: {
       async fetchCompanies () {
@@ -146,10 +116,10 @@
       },
       openSend (company) {
         this.editFunc(company)
-        this.dialogSendMessage = true
+        this.dialogSendMessage = true;
       },
       closeSend () {
-        this.dialogSendMessage = false
+        this.dialogSendMessage = false;
       },
       showComments (company) {
         localStorage.setItem('company', JSON.stringify(company))
